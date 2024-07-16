@@ -81,11 +81,15 @@ st.write("Upload your resume to parse it into JSON format using GPT-3.5-turbo.")
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
 if uploaded_file is not None:
-    resume_text = extract_text_from_pdf(uploaded_file)
+    with st.spinner('Extracting text from PDF...'):
+        resume_text = extract_text_from_pdf(uploaded_file)
+    st.success('Text extracted successfully.')
     st.write("Extracted Text from PDF:")
     st.text(resume_text)  # Display the extracted text
     
-    parsed_data = parse_resume_gpt(resume_text)
+    with st.spinner('Processing resume with GPT...'):
+        parsed_data = parse_resume_gpt(resume_text)
+    st.success('Resume processed successfully.')
     
     # Print the raw GPT response for debugging
     st.write("Raw GPT Response:")
