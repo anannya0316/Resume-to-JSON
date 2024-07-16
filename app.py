@@ -2,6 +2,7 @@ import streamlit as st
 import PyPDF2
 import openai
 import json
+import time
 
 # Load OpenAI API key from secrets
 openai.api_key = st.secrets["openai"]["api_key"]
@@ -82,14 +83,17 @@ uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
 if uploaded_file is not None:
     with st.spinner('Extracting text from PDF...'):
+        start_time = time.time()
         resume_text = extract_text_from_pdf(uploaded_file)
-    st.success('Text extracted successfully.')
+        st.success(f'Text extracted successfully in {time.time() - start_time:.2f} seconds.')
+    
     st.write("Extracted Text from PDF:")
     st.text(resume_text)  # Display the extracted text
     
     with st.spinner('Processing resume with GPT...'):
+        start_time = time.time()
         parsed_data = parse_resume_gpt(resume_text)
-    st.success('Resume processed successfully.')
+        st.success(f'Resume processed successfully in {time.time() - start_time:.2f} seconds.')
     
     # Print the raw GPT response for debugging
     st.write("Raw GPT Response:")
