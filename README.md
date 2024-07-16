@@ -41,6 +41,8 @@ Welcome to **Resume to JSON Parser**! This tool extracts structured information 
     api_key = "YOUR_OPENAI_API_KEY"
     ```
 
+* Remember the app might take some time to show results so be patient! It is working!
+
 ### Run the Application
 
 ```sh
