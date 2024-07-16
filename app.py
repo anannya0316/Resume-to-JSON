@@ -99,7 +99,7 @@ if uploaded_file is not None:
         cleaned_data = parsed_data[start_idx:end_idx]
         parsed_data_json = json.loads(cleaned_data)
         # Print the parsed data
-        st.write("Parsed Resume Data:")
+        st.write("This is the JSON format of the resume:")
         st.json(parsed_data_json)
     except json.JSONDecodeError as e:
         st.error("Failed to decode JSON response")
