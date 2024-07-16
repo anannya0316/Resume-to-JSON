@@ -2,6 +2,9 @@
 
 Welcome to **Resume to JSON Parser**! This tool extracts structured information from resumes in PDF format and converts it into JSON. Perfect for automating resume data extraction!
 
+
+FYI : the app might take some time to show results so be patient! It is working!
+ 
 ## ✨ Features
 
 <ul>
@@ -40,8 +43,6 @@ Welcome to **Resume to JSON Parser**! This tool extracts structured information 
     [openai]
     api_key = "YOUR_OPENAI_API_KEY"
     ```
-
-* Remember the app might take some time to show results so be patient! It is working!
 
 ### Run the Application
 
