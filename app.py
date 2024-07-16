@@ -82,6 +82,9 @@ uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
 if uploaded_file is not None:
     resume_text = extract_text_from_pdf(uploaded_file)
+    st.write("Extracted Text from PDF:")
+    st.text(resume_text)  # Display the extracted text
+    
     parsed_data = parse_resume_gpt(resume_text)
     
     # Print the raw GPT response for debugging
