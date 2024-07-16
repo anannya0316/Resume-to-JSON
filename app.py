@@ -7,80 +7,75 @@ import json
 openai.api_key = st.secrets["openai"]["api_key"]
 
 def parse_resume_gpt(text):
-    prompt = f"""
-    You are an expert resume analyst. Your task is to meticulously extract structured information from resumes. If any information is missing, do not fill in the information with something else. Only take information that is already provided. Please extract the following information from the resume text provided below and return it in JSON format:
-    
-    1. Personal Information:
-       - Full Name
-       - Contact Information (Phone, Email, Address)
-       - all social profiles links with their names(if available)
+    messages = [
+        {"role": "system", "content": "You are an expert resume analyst with a keen eye for detail."},
+        {"role": "user", "content": f"""
+        You are an expert resume analyst. Your task is to meticulously extract structured information from resumes.
+        If any information is missing, do not fill in the information with something else. Only take information that is already provided.
+        Please extract the following information from the resume text provided below and return it in JSON format:
 
-    2. Work Experience:
-       - Job Title
-       - Company Name
-       - Location
-       - Dates of Employment (Start Date - End Date)
-       - Detailed Responsibilities and Achievements
+        1. Personal Information:
+           - Full Name
+           - Contact Information (Phone, Email, Address)
+           - All social profiles links with their names (if available)
 
-    3. Education:
-       - Degree
-       - University/College Name
-       - Graduation Year
-       - Major/Field of Study
+        2. Work Experience:
+           - Job Title
+           - Company Name
+           - Location
+           - Dates of Employment (Start Date - End Date)
+           - Detailed Responsibilities and Achievements
 
-    4. Skills:
-       - A comprehensive list of professional skills
+        3. Education:
+           - Degree
+           - University/College Name
+           - Graduation Year
+           - Major/Field of Study
 
-    5. Certifications:
-       - Certification Name
-       - Issuing Organization
-       - Date of Issuance
+        4. Skills:
+           - A comprehensive list of professional skills
 
-    6. Projects:
-       - Project Title
-       - Description
-       - Technologies Used
-       - Role in the Project
+        5. Certifications:
+           - Certification Name
+           - Issuing Organization
+           - Date of Issuance
 
-    7. Awards and Honors:
-       - Award Title
-       - Issuing Organization
-       - Date Received
-       - Description
+        6. Projects:
+           - Project Title
+           - Description
+           - Technologies Used
+           - Role in the Project
 
-    8. Languages:
-       - List of languages spoken with proficiency levels
+        7. Awards and Honors:
+           - Award Title
+           - Issuing Organization
+           - Date Received
+           - Description
 
-    Resume Text:
-    {text}
+        8. Languages:
+           - List of languages spoken with proficiency levels
 
-    Extracted Information (in JSON format):
-    """
+        Resume Text:
+        {text}
 
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are an expert resume analyst with a keen eye for detail."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].message['content'].strip()
-    except Exception as e:
-        st.error(f"Error in OpenAI API call: {e}")
-        return None
+        Extracted Information (in JSON format):
+        """}
+    ]
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    return response.choices[0].message['content']
 
 def extract_text_from_pdf(uploaded_file):
-    try:
-        pdf_reader = PyPDF2.PdfReader(uploaded_file)
-        text = ""
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text += page.extract_text() + "\n"
-        return text
-    except Exception as e:
-        st.error(f"Error in extracting text from PDF: {e}")
-        return None
+    pdf_reader = PyPDF2.PdfReader(uploaded_file)
+    text = ""
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text() + "\n"
+    return text
 
 st.title("Resume Parser with GPT")
 st.write("Upload your resume to parse it into JSON format using GPT-3.5-turbo.")
@@ -90,37 +85,31 @@ uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 if uploaded_file is not None:
     with st.spinner('Extracting text from PDF...'):
         resume_text = extract_text_from_pdf(uploaded_file)
-        if resume_text:
-            st.success('Text extracted successfully.')
-            st.write("Extracted Text from PDF:")
-            st.text(resume_text)  # Display the extracted text
+        st.success('Text extracted successfully.')
+        st.write("Extracted Text from PDF:")
+        st.text(resume_text)  # Display the extracted text
     
-            with st.spinner('Processing resume with GPT...'):
-                parsed_data = parse_resume_gpt(resume_text)
-                if parsed_data:
-                    st.success('Resume processed successfully.')
+        with st.spinner('Processing resume with GPT...'):
+            parsed_data = parse_resume_gpt(resume_text)
+            st.success('Resume processed successfully.')
     
-                    # Print the raw GPT response for debugging
-                    st.write("Raw GPT Response:")
-                    st.text(parsed_data)
+            # Print the raw GPT response for debugging
+            st.write("Raw GPT Response:")
+            st.text(parsed_data)
     
-                    # Attempt to clean and load the response as JSON
-                    try:
-                        # Clean the response to ensure it's valid JSON
-                        start_idx = parsed_data.find('{')
-                        end_idx = parsed_data.rfind('}') + 1
-                        cleaned_data = parsed_data[start_idx:end_idx]
-                        parsed_data_json = json.loads(cleaned_data)
-                        # Print the parsed data
-                        st.write("This is the JSON format of the resume:")
-                        st.json(parsed_data_json)
-                    except json.JSONDecodeError as e:
-                        st.error("Failed to decode JSON response")
-                        st.text(f"Error: {e}")
-                        # Print the cleaned data for further debugging
-                        st.write("Cleaned GPT Response:")
-                        st.text(cleaned_data)
-                else:
-                    st.error("Failed to process resume with GPT.")
-        else:
-            st.error("Failed to extract text from PDF.")
+            # Attempt to clean and load the response as JSON
+            try:
+                # Clean the response to ensure it's valid JSON
+                start_idx = parsed_data.find('{')
+                end_idx = parsed_data.rfind('}') + 1
+                cleaned_data = parsed_data[start_idx:end_idx]
+                parsed_data_json = json.loads(cleaned_data)
+                # Print the parsed data
+                st.write("This is the JSON format of the resume:")
+                st.json(parsed_data_json)
+            except json.JSONDecodeError as e:
+                st.error("Failed to decode JSON response")
+                st.text(f"Error: {e}")
+                # Print the cleaned data for further debugging
+                st.write("Cleaned GPT Response:")
+                st.text(cleaned_data)
