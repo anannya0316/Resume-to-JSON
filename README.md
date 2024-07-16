@@ -4,6 +4,8 @@ Welcome to **Resume to JSON Parser**! This tool extracts structured information 
 
 **[Run the app](https://resume-to-json.streamlit.app/)**
 
+FYI: The app might take some time to show results, so be patient! It is working!
+
 ## ✨ Features
 
 - 📂 **PDF to JSON**: Extracts detailed resume information into a JSON format.
@@ -14,10 +16,10 @@ Welcome to **Resume to JSON Parser**! This tool extracts structured information 
 
 ### Prerequisites
 
-- Python 3.7+
-- Streamlit
-- PyPDF2
-- OpenAI
+- **Python 3.7+**: The programming language used for development.
+- **Streamlit**: A framework used to create the web application.
+- **PyPDF2**: A library to read and extract text from PDF files.
+- **OpenAI**: The API used for generating structured data from the resume text.
 
 ### Installation
 
