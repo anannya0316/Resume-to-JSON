@@ -3,8 +3,8 @@ import PyPDF2
 import openai
 import json
 
-# Initialize OpenAI with your API key
-openai.api_key = 'YOUR_OPENAI_API_KEY'
+# Load OpenAI API key from secrets
+openai.api_key = st.secrets["openai"]["api_key"]
 
 def parse_resume_gpt(text):
     prompt = f"""
@@ -13,7 +13,7 @@ def parse_resume_gpt(text):
     1. Personal Information:
        - Full Name
        - Contact Information (Phone, Email, Address)
-       - all social profiles links with their names(if available)
+       - all social profiles links with their names (if available)
 
     2. Work Experience:
        - Job Title
@@ -67,13 +67,12 @@ def parse_resume_gpt(text):
 
     return response.choices[0].message['content'].strip()
 
-def extract_text_from_pdf(file_path):
-    with open(file_path, 'rb') as file:
-        pdf_reader = PyPDF2.PdfReader(file)
-        text = ""
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text += page.extract_text() + "\n"
+def extract_text_from_pdf(uploaded_file):
+    pdf_reader = PyPDF2.PdfReader(uploaded_file)
+    text = ""
+    for page_num in range(len(pdf_reader.pages)):
+        page = pdf_reader.pages[page_num]
+        text += page.extract_text() + "\n"
     return text
 
 st.title("Resume Parser with GPT")
