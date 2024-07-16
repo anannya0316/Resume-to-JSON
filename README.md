@@ -1,4 +1,4 @@
-📄 Resume to JSON Parser
+> 📄 Resume to JSON Parser
 Welcome to Resume to JSON Parser! This tool extracts structured information from resumes in PDF format and converts it into JSON. Perfect for automating resume data extraction!
 
 ✨ Features
