@@ -86,16 +86,10 @@ if uploaded_file is not None:
     with st.spinner('Extracting text from PDF...'):
         resume_text = extract_text_from_pdf(uploaded_file)
         st.success('Text extracted successfully.')
-        st.write("Extracted Text from PDF:")
-        st.text(resume_text)  # Display the extracted text
     
         with st.spinner('Processing resume with GPT...'):
             parsed_data = parse_resume_gpt(resume_text)
             st.success('Resume processed successfully.')
-    
-            # Print the raw GPT response for debugging
-            st.write("Raw GPT Response:")
-            st.text(parsed_data)
     
             # Attempt to clean and load the response as JSON
             try:
@@ -105,11 +99,9 @@ if uploaded_file is not None:
                 cleaned_data = parsed_data[start_idx:end_idx]
                 parsed_data_json = json.loads(cleaned_data)
                 # Print the parsed data
-                st.write("This is the JSON format of the resume:")
                 st.json(parsed_data_json)
             except json.JSONDecodeError as e:
                 st.error("Failed to decode JSON response")
                 st.text(f"Error: {e}")
                 # Print the cleaned data for further debugging
-                st.write("Cleaned GPT Response:")
                 st.text(cleaned_data)
