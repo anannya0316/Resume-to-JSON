@@ -7,67 +7,64 @@ import json
 openai.api_key = st.secrets["openai"]["api_key"]
 
 def parse_resume_gpt(text):
-    messages = [
-        {"role": "system", "content": "You are an expert resume analyst with a keen eye for detail."},
-        {"role": "user", "content": f"""
-        You are an expert resume analyst. Your task is to meticulously extract structured information from resumes.
-        If any information is missing, do not fill in the information with something else. Only take information that is already provided.
-        Please extract the following information from the resume text provided below and return it in JSON format:
+    prompt = f"""
+    You are an expert resume analyst. Your task is to meticulously extract structured information from resumes. If any information is missing, do not fill in the information with something else. Only take information that is already provided. Please extract the following information from the resume text provided below and return it in JSON format:
+    
+    1. Personal Information:
+       - Full Name
+       - Contact Information (Phone, Email, Address)
+       - all social profiles links with their names(if available)
 
-        1. Personal Information:
-           - Full Name
-           - Contact Information (Phone, Email, Address)
-           - All social profiles links with their names (if available)
+    2. Work Experience:
+       - Job Title
+       - Company Name
+       - Location
+       - Dates of Employment (Start Date - End Date)
+       - Detailed Responsibilities and Achievements
 
-        2. Work Experience:
-           - Job Title
-           - Company Name
-           - Location
-           - Dates of Employment (Start Date - End Date)
-           - Detailed Responsibilities and Achievements
+    3. Education:
+       - Degree
+       - University/College Name
+       - Graduation Year
+       - Major/Field of Study
 
-        3. Education:
-           - Degree
-           - University/College Name
-           - Graduation Year
-           - Major/Field of Study
+    4. Skills:
+       - A comprehensive list of professional skills
 
-        4. Skills:
-           - A comprehensive list of professional skills
+    5. Certifications:
+       - Certification Name
+       - Issuing Organization
+       - Date of Issuance
 
-        5. Certifications:
-           - Certification Name
-           - Issuing Organization
-           - Date of Issuance
+    6. Projects:
+       - Project Title
+       - Description
+       - Technologies Used
+       - Role in the Project
 
-        6. Projects:
-           - Project Title
-           - Description
-           - Technologies Used
-           - Role in the Project
+    7. Awards and Honors:
+       - Award Title
+       - Issuing Organization
+       - Date Received
+       - Description
 
-        7. Awards and Honors:
-           - Award Title
-           - Issuing Organization
-           - Date Received
-           - Description
+    8. Languages:
+       - List of languages spoken with proficiency levels
 
-        8. Languages:
-           - List of languages spoken with proficiency levels
+    Resume Text:
+    {text}
 
-        Resume Text:
-        {text}
+    Extracted Information (in JSON format):
+    """
 
-        Extracted Information (in JSON format):
-        """}
-    ]
-
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages
+    response = openai.Completion.create(
+        engine="davinci-codex",
+        prompt=prompt,
+        max_tokens=1500,
+        temperature=0.7
     )
 
-    return response.choices[0].message['content']
+    return response.choices[0].text.strip()
 
 def extract_text_from_pdf(uploaded_file):
     pdf_reader = PyPDF2.PdfReader(uploaded_file)
