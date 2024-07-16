@@ -4,8 +4,6 @@ Welcome to **Resume to JSON Parser**! This tool extracts structured information 
 
 **[Run the app](https://resume-to-json.streamlit.app/)**
 
-FYI: The app might take some time to show results, so be patient! It is working!
-
 ## ✨ Features
 
 - 📂 **PDF to JSON**: Extracts detailed resume information into a JSON format.
