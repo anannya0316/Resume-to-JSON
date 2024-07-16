@@ -3,7 +3,6 @@ import PyPDF2
 import openai
 import json
 
-# Load OpenAI API key from secrets
 openai.api_key = st.secrets["openai"]["api_key"]
 
 def parse_resume_gpt(text):
