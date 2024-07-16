@@ -10,12 +10,15 @@ openai.api_key = st.secrets["openai"]["api_key"]
 def parse_resume_gpt(text):
     messages = [
         {"role": "system", "content": "You are an expert resume analyst with a keen eye for detail."},
-        {"role": "user", "content": f"""You are an expert resume analyst. Your task is to meticulously extract structured information from resumes. If any information is missing, do not fill in the information with something else. Only take information that is already provided. Please extract the following information from the resume text provided below and return it in JSON format:
-        
+        {"role": "user", "content": f"""
+        You are an expert resume analyst. Your task is to meticulously extract structured information from resumes.
+        If any information is missing, do not fill in the information with something else. Only take information that is already provided.
+        Please extract the following information from the resume text provided below and return it in JSON format:
+
         1. Personal Information:
            - Full Name
            - Contact Information (Phone, Email, Address)
-           - all social profiles links with their names (if available)
+           - All social profiles links with their names (if available)
 
         2. Work Experience:
            - Job Title
@@ -56,7 +59,8 @@ def parse_resume_gpt(text):
         Resume Text:
         {text}
 
-        Extracted Information (in JSON format):"""}
+        Extracted Information (in JSON format):
+        """}
     ]
 
     response = openai.ChatCompletion.create(
@@ -65,7 +69,7 @@ def parse_resume_gpt(text):
         max_tokens=1500
     )
 
-    return response.choices[0].message['content'].strip()
+    return response.choices[0].message['content']
 
 def extract_text_from_pdf(uploaded_file):
     pdf_reader = PyPDF2.PdfReader(uploaded_file)
