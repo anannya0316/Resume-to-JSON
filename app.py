@@ -7,7 +7,6 @@ import json
 openai.api_key = st.secrets["openai"]["api_key"]
 
 def parse_resume_gpt(text):
-    client = openai.OpenAI(api_key=openai.api_key)
     messages = [
         {"role": "system", "content": "You are an expert resume analyst with a keen eye for detail."},
         {"role": "user", "content": f"""
@@ -63,12 +62,12 @@ def parse_resume_gpt(text):
         """}
     ]
 
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages
     )
 
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message['content']
 
 def extract_text_from_pdf(uploaded_file):
     pdf_reader = PyPDF2.PdfReader(uploaded_file)
